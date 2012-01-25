@@ -1,0 +1,6 @@
+*~
+rtl_auto
+sim/VUART_tb.so
+sim/sim.vcd
+uart.xml
+sim/obj_dir
