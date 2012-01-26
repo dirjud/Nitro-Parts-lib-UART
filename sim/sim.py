@@ -28,10 +28,12 @@ def checkN(N):
         else:
             failing += 1
 
+dev.set("UART", 0, 0x01)
+dev.set("UART_CTRL", "parity_mode", 3)
 #print "Pass count=", passing, "/", (passing + failing)
-dev.set("UART", 0, 0xaa)
-dev.set("UART", 0, 0x55)
-dev.set("UART", 0, 0xFE)
+#dev.set("UART", 0, 0xaa)
+#dev.set("UART", 0, 0x55)
+#dev.set("UART", 0, 0xFE)
 dev.set("UART", 0, 0x01)
 
 
@@ -44,5 +46,5 @@ dev.set("UART", 0, 0x01)
 
 
 
-tb.adv(100)
-tb.end()
+#tb.adv(100)
+#tb.end()

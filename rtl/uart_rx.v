@@ -30,7 +30,7 @@ module uart_rx
 	 clk_pulse <= clk_pulse_wire;
 
 	 if(clk_sync) begin
-	    clk_div_counter <= clk_div >> 1;
+	    clk_div_counter <= (clk_div >> 1)+2;
 	 end else if(clk_pulse_wire) begin
 	    clk_div_counter <= 0;
 	 end else begin
@@ -44,7 +44,7 @@ module uart_rx
    reg 	      rx_s, rx_ss;
    wire       start_detect = (rx_s == START_BIT) && (rx_ss == STOP_BIT);
    reg [3:0]  bit_counter;
-   wire [3:0] stop_count = (parity_mode[0]) ? 11 : 10;
+   wire [3:0] stop_count = (parity_mode[0]) ? 10 : 10;
    wire       parity_raw = data_s[8] + data_s[7] + data_s[6] + data_s[5] + data_s[4] + data_s[3] + data_s[2] + data_s[1];
    wire       parity_calc = (parity_mode[1]) ? ~parity_raw : parity_raw;
    
