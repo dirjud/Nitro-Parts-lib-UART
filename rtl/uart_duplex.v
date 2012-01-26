@@ -11,13 +11,13 @@ module uart_duplex
     output re,
     output rx_error,
     output [7:0] rx_data,
-    output reg rx_busy,
+    output rx_busy,
 
     output tx,
     input [7:0] tx_data,
     input we,
-    output reg tx_busy,
-    output reg tx_done
+    output tx_busy,
+    output tx_done
     );
 
    uart_tx #(.CLK_DIV_WIDTH(CLK_DIV_WIDTH))
