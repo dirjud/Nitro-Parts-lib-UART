@@ -10,6 +10,16 @@ di = DeviceInterface(
             regAddrWidth=8,
             regDataWidth=8,
             comment="UART Raw Data Interface",
+            register_list = [
+                Register(
+                    name = "data",
+                    width=8,
+                    type="int", 
+                    mode="write",
+                    init=0, 
+                    comment="Read and write data from UART using this register",
+                    ),
+                ],
             ),
         Terminal(
             name="UART_CTRL",
