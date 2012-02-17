@@ -118,7 +118,7 @@ module uart_di
          di_reg_datao =  { 8'h0, rx_buffer_data };
          di_read_rdy  =  ~rx_buf_empty;
          di_write_rdy = ~tx_busy && !di_write;
-         di_transfer_status = (rx_transfer_status && di_read_mode);
+         di_transfer_status = di_read_mode ? rx_transfer_status : 0;
       end else begin
          di_UART_en   = 0;
          di_reg_datao = 16'hAAAA;
