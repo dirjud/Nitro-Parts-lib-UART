@@ -45,7 +45,7 @@ module uart_rx
    wire       start_detect = (rx_s == START_BIT) && (rx_ss == STOP_BIT);
    reg [3:0]  bit_counter;
    wire [3:0] stop_count = (parity_mode[0]) ? 10 : 10;
-   wire       parity_raw = data_s[8] + data_s[7] + data_s[6] + data_s[5] + data_s[4] + data_s[3] + data_s[2] + data_s[1];
+   wire       parity_raw = next_data_s[8] + next_data_s[7] + next_data_s[6] + next_data_s[5] + next_data_s[4] + next_data_s[3] + next_data_s[2] + next_data_s[1];
    wire       parity_calc = (parity_mode[1]) ? ~parity_raw : parity_raw;
    
    always@(posedge clk or negedge resetb) begin
