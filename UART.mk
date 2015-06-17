@@ -16,3 +16,4 @@ SYN_FILES += \
 	$(UART_DIR)/rtl/uart_duplex.v \
 	$(UART_DIR)/rtl/uart_di.v \
 	rtl_auto/UART_CTRLTerminal.v \
+	$(NITRO_PARTS_DIR)/lib/HostInterface/rtl/byter.v \

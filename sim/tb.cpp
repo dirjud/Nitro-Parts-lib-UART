@@ -6,7 +6,7 @@
 
 #include "VUART_tb.h"
 #include "VUART_tb_UART_tb.h"
-#include "VUART_tb_fx2.h"
+#include "VUART_tb_fx3.h"
 
 #if VM_TRACE
 #include "verilated_vcd_c.h"
@@ -123,7 +123,7 @@ static PyObject *get_dev(PyObject *self, PyObject* args ) {
     PyErr_SetString(PyExc_Exception, "You must call init() prior to this method");
     return NULL;
   }    
-  return nitro_from_datatype ( *(tb->v->fx2->fx2_dev) );
+  return nitro_from_datatype ( *(tb->v->fx3->fx3_dev) );
 }
 
 static PyObject *adv(PyObject *self, PyObject *args) {

@@ -4,15 +4,16 @@ module uart_rx
     parameter STOP_BIT  = 1
     )
    (
-    input clk,
-    input resetb,
+    input 		      clk,
+    input 		      resetb,
     input [CLK_DIV_WIDTH-1:0] clk_div,
-    input rx,
-    input [1:0] parity_mode,
-    output reg re,
-    output reg error,
-    output reg [7:0] datao,
-    output reg busy
+    input 		      rx,
+    input [1:0] 	      parity_mode,
+    input [1:0]		      parity_error_mode,
+    output reg 		      re,
+    output reg 		      error,
+    output reg [7:0] 	      datao,
+    output reg 		      busy
     );
    
    
@@ -20,16 +21,18 @@ module uart_rx
    reg [CLK_DIV_WIDTH-1:0] clk_div_counter;
    wire [CLK_DIV_WIDTH-1:0] next_clk_div_counter = clk_div_counter + 1;
    wire clk_pulse_wire = next_clk_div_counter >= clk_div;
-   reg 	clk_pulse, clk_sync;
+   reg 	clk_pulse0, clk_sync;
+   wire clk_pulse = clk_pulse0 && !clk_sync;
    
    always@(posedge clk or negedge resetb) begin
       if(!resetb) begin
 	 clk_div_counter <= 0;
-	 clk_pulse <= 0;
+	 clk_pulse0 <= 0;
       end else begin
-	 clk_pulse <= clk_pulse_wire;
+	 clk_pulse0 <= clk_pulse_wire && !clk_sync;
 
 	 if(clk_sync) begin
+	    //$display("sync: %d", clk_div_counter);
 	    clk_div_counter <= (clk_div >> 1)+2;
 	 end else if(clk_pulse_wire) begin
 	    clk_div_counter <= 0;
@@ -44,9 +47,11 @@ module uart_rx
    reg 	      rx_s, rx_ss;
    wire       start_detect = (rx_s == START_BIT) && (rx_ss == STOP_BIT);
    reg [3:0]  bit_counter;
-   wire [3:0] stop_count = (parity_mode[0]) ? 10 : 10;
+   wire [3:0] stop_count = (parity_mode[1]) ? 10 : 9;
    wire       parity_raw = next_data_s[8] + next_data_s[7] + next_data_s[6] + next_data_s[5] + next_data_s[4] + next_data_s[3] + next_data_s[2] + next_data_s[1];
-   wire       parity_calc = (parity_mode[1]) ? ~parity_raw : parity_raw;
+   wire       parity_calc = (parity_mode[0]) ? ~parity_raw : parity_raw;
+   wire       parity_error0 = parity_calc != next_data_s[9];
+   wire [3:0] shift = (10-stop_count);
    
    always@(posedge clk or negedge resetb) begin
       if(!resetb) begin
@@ -56,6 +61,7 @@ module uart_rx
 	 rx_ss  <= 0;
 	 clk_sync <= 0;
 	 bit_counter <= 0;
+	 error <= 0;
       end else begin
 	 rx_s <= rx;
 	 rx_ss <= rx_s;
@@ -67,14 +73,24 @@ module uart_rx
 	       bit_counter <= bit_counter + 1;
 	       if(bit_counter == stop_count) begin
 		  busy <= 0;
-		  if((next_data_s[0] == START_BIT) && 
-		     (next_data_s[stop_count] == STOP_BIT) &&
-		     (!parity_mode[0] || (parity_calc == next_data_s[9]))) begin
-		     re <= 1;
-		  end else begin
-		     error <= 1;
+		  if((next_data_s[shift] == START_BIT) && 
+		     (next_data_s[10] == STOP_BIT)) begin
+		     error <= (parity_error_mode==0) ? 0 : parity_error0;
+		     if(parity_error_mode==0  || !parity_mode[1] || parity_error_mode==2) begin
+			re <= 1;
+		     end else begin
+			if(parity_error0) begin
+			   re <= 0;
+			end else begin
+			   re <= 1;
+			end
+		     end
 		  end
-		  datao <= next_data_s[8:1];
+		  if(shift == 1) begin
+		     datao <= next_data_s[9:2];
+		  end else begin
+		     datao <= next_data_s[8:1];
+		  end
 	       end
 	    end
 	 end else begin

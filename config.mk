@@ -19,8 +19,8 @@ INC_FILES = rtl_auto/UART_CTRLTerminalInst.v     \
 # variables to specify simulator specific files
 SIM_FILES = \
 	sim/UART_tb.v \
-	$(NITRO_PARTS_DIR)/lib/HostInterface/models/fx2.v \
-	$(NITRO_PARTS_DIR)/lib/HostInterface/rtl/HostInterface.v \
+	$(NITRO_PARTS_DIR)/lib/HostInterface/models/fx3.v \
+	$(NITRO_PARTS_DIR)/lib/HostInterface/rtl/Fx3HostInterface.v \
 
 #	$(NITRO_PARTS_DIR)/Aptina/MT9M032/sim/UXN1230DaughterBoard.v \
 

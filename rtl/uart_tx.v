@@ -46,11 +46,11 @@ module uart_tx
    wire startbit = START_BIT;
    wire stopbit  = STOP_BIT;
    wire parity_raw = datai[7] + datai[6] + datai[5] + datai[4] + datai[3] + datai[2] + datai[1] + datai[0];
-   wire paritybit = parity_mode[1] ? !parity_raw : parity_raw;
+   wire paritybit = parity_mode[0] ? !parity_raw : parity_raw;
 
    wire [11:0] data_tx_parity = { endtx, stopbit, paritybit, datai, startbit };
    wire [11:0] data_tx_noparity={ 1'b0,  endtx,   stopbit,   datai, startbit };
-   wire [11:0] data_tx = (parity_mode[0]) ? data_tx_parity : data_tx_noparity;
+   wire [11:0] data_tx = (parity_mode[1]) ? data_tx_parity : data_tx_noparity;
    reg [11:0]  data_s;
 
    always@(posedge clk or negedge resetb) begin
