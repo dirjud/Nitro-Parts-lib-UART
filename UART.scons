@@ -1,0 +1,11 @@
+
+uart_v_sources = [ File('rtl/uart_tx.v'),
+                   File('rtl/uart_rx.v'),
+                   File('rtl/uart_duplex.v'),
+                   File('rtl/uart_di.v'),
+                   'rtl_auto/UART_CTRLTerminal.v',
+                   File('../../lib/HostInterface/rtl/byter.v')
+                 ]
+
+Export ( 'uart_v_sources' )
+
