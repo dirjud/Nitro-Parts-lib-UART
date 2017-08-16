@@ -62,6 +62,8 @@ module uart_rx
 	 clk_sync <= 0;
 	 bit_counter <= 0;
 	 error <= 0;
+         datao <= 0;
+         re <= 0;
       end else begin
 	 rx_s <= rx;
 	 rx_ss <= rx_s;

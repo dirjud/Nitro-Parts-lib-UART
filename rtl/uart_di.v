@@ -34,7 +34,7 @@ module uart_di
 `include "UART_CTRLTerminalInstance.v"
 /* verilator lint_on WIDTH */
 
-   wire   rx, tx, re, rx_error, rx_busy, tx_done, tx_busy;
+   wire   re, rx_error, rx_busy, tx_done, tx_busy;
    wire [7:0] rx_data, tx_data;
    wire       di_write_uart = (di_term_addr == uart_term_addr) && di_write;
    wire       uart_we;
@@ -72,12 +72,17 @@ module uart_di
    reg [8:0] rx_buffer_data;
    reg 	     rx_buffer_ready;
    reg [15:0] di_transfer_status_uart;
-   
+
+   always @(posedge ifclk) begin
+      if(re) begin
+	 rx_buffer[wp] <= { rx_error, rx_data };
+      end
+      rx_buffer_data <= rx_buffer[rp];
+   end
    always @(posedge ifclk or negedge resetb) begin
       if(!resetb) begin
 	 rp <= 0;
 	 wp <= 0;
-	 rx_buffer_data <= 0;
 	 rx_buffer_ready <= 0;
 	 rx_data_available <= 0;
 	 di_transfer_status_uart <= 0;
@@ -94,14 +99,12 @@ module uart_di
 	 end else begin
 	    if(re) begin
 	       wp <= next_wp;
-	       rx_buffer[wp] <= { rx_error, rx_data };
 	    end
 
 	    if(di_read_uart || (re && (next_wp == rp))) begin
 	       rp <= next_rp;
 	    end
 	 end
-	 rx_buffer_data <= rx_buffer[rp];
 	 rx_buffer_ready <= !rx_buf_empty && !di_read_uart;
 
 	 /* verilator lint_off WIDTH */
