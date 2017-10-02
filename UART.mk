@@ -18,4 +18,3 @@ SYN_FILES += \
 	rtl_auto/UART_CTRLTerminal.v \
 	$(NITRO_PARTS_DIR)/lib/HostInterface/rtl/byter.v \
 
-DEFS += UART_DI
